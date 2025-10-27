@@ -195,8 +195,8 @@ server <- function(input, output, session) {
       map <- tm_shape(filtered_data()) +
         tm_fill(
           fill = input$variable,
-          fill.scale = tm_scale_continuous(values = "YlOrRd"),
-          fill.legend = tm_legend(title = var_label),
+          fill.scale = tm_scale_continuous(values = "brewer.yl_or_rd"),
+          fill.legend = tm_legend(title = var_label, position = tm_pos_in("left", "top")),
           fill_alpha = input$alpha,
           popup.vars = c("gridsquare", input$geo_type, input$variable)
         )
@@ -212,7 +212,7 @@ server <- function(input, output, session) {
             values = c("blue", "white", "red"),
             midpoint = 0
           ),
-          fill.legend = tm_legend(title = paste("Change in", var_label)),
+          fill.legend = tm_legend(title = paste("Change in", var_label), position = tm_pos_in("left", "top")),
           fill_alpha = input$alpha,
           popup.vars = c("gridsquare", input$geo_type, "change")
         )
