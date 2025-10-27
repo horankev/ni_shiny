@@ -13,41 +13,6 @@ const24 <- readRDS("const24_simplified.rds")
 dea14 <- readRDS("dea14_simplified.rds")
 lgd14 <- readRDS("lgd14_simplified.rds")
 
-observe({
-  cat("==== MAP DEBUG ====\n")
-  print(exists("all_years_1km"))
-  print(class(all_years_1km))
-  print(names(all_years_1km))
-  print(summary(all_years_100m$majority_community))
-  
-  
-  print(exists("all_years_100m"))
-  print(class(all_years_100m))
-  print(names(all_years_100m))
-  print(summary(all_years_100m$majority_community))
-  
-  
-  print(exists("all_years_mixed"))
-  print(class(all_years_mixed))
-  print(names(all_years_mixed))
-  print(summary(all_years_mixed$majority_community))
-  
-  
-  print(exists("const24"))
-  print(class(const24))
-  print(names(const24))
-  
-  
-  print(exists("dea14"))
-  print(class(dea14))
-  print(names(dea14))
-  
-  
-  print(exists("lgd14"))
-  print(class(lgd14))
-  print(names(lgd14))
-  cat("====================\n")
-})
 
 # Variable choices
 var_choices <- c(
@@ -230,11 +195,11 @@ server <- function(input, output, session) {
       # Single year map
       map <- tm_shape(filtered_data()) +
         tm_fill(
-          fill = input$variable,
-          fill.scale = tm_scale_continuous(values = "brewer.yl_or_rd"),
-          fill.legend = tm_legend(title = var_label, position = tm_pos_in("left", "top")),
-          fill_alpha = input$alpha,
-          popup.vars = c("gridsquare", input$geo_type, input$variable)
+          col = input$variable,
+          palette = "-YlOrRd",
+          alpha = input$alpha,
+          title = var_label,
+          id = c("gridsquare", input$geo_type)
         )
       
       title_text <- paste0(input$year, ": ", var_label)
@@ -243,14 +208,11 @@ server <- function(input, output, session) {
       # Change map
       map <- tm_shape(filtered_data()) +
         tm_fill(
-          fill = "change",
-          fill.scale = tm_scale_continuous(
-            values = c("blue", "white", "red"),
-            midpoint = 0
-          ),
-          fill.legend = tm_legend(title = paste("Change in", var_label), position = tm_pos_in("left", "top")),
-          fill_alpha = input$alpha,
-          popup.vars = c("gridsquare", input$geo_type, "change")
+          col = "change",
+          palette = "-RdBu",
+          alpha = input$alpha,
+          title = paste("Change in", var_label),
+          id = c("gridsquare", input$geo_type)
         )
       
       title_text <- paste0("Change ", input$year_from, " to ", input$year_to, 
