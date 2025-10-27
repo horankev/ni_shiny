@@ -13,7 +13,6 @@ const24 <- readRDS("const24_simplified.rds")
 dea14 <- readRDS("dea14_simplified.rds")
 lgd14 <- readRDS("lgd14_simplified.rds")
 
-
 # Variable choices
 var_choices <- c(
   "Unemployment Rate" = "unemployment_rate",
@@ -185,61 +184,74 @@ server <- function(input, output, session) {
   # Create map
   output$map <- renderTmap({
     req(filtered_data())
+    
     tmap_mode("view")
     
+    # Get variable label
     var_label <- names(var_choices)[var_choices == input$variable]
     
     if (input$map_type == "single") {
+      # Single year map
       map <- tm_shape(filtered_data()) +
-        tm_polygons(
+        tm_fill(
           fill = input$variable,
           fill.scale = tm_scale_continuous(values = "brewer.yl_or_rd"),
-          fill.legend = tm_legend(title = var_label),
+          fill.legend = tm_legend(title = var_label, position = tm_pos_in("left", "top")),
           fill_alpha = input$alpha,
-          popup = tm_popup(vars = c("gridsquare", input$geo_type, input$variable))
+          popup.vars = c("gridsquare", input$geo_type, input$variable)
         )
+      
+      title_text <- paste0(input$year, ": ", var_label)
+      
     } else {
+      # Change map
       map <- tm_shape(filtered_data()) +
-        tm_polygons(
+        tm_fill(
           fill = "change",
           fill.scale = tm_scale_continuous(
             values = c("blue", "white", "red"),
             midpoint = 0
           ),
-          fill.legend = tm_legend(title = paste("Change in", var_label)),
+          fill.legend = tm_legend(title = paste("Change in", var_label), position = tm_pos_in("left", "top")),
           fill_alpha = input$alpha,
-          popup = tm_popup(vars = c("gridsquare", input$geo_type, "change"))
+          popup.vars = c("gridsquare", input$geo_type, "change")
         )
+      
+      title_text <- paste0("Change ", input$year_from, " to ", input$year_to, 
+                           ": ", var_label)
     }
     
-    # Boundaries
+    # Add boundaries if requested
     if (input$show_boundaries) {
-      boundary_data <- switch(
-        input$geo_type,
-        "const24_nm" = const24,
-        "DEA2014_nm" = dea14,
-        "LGD2014_nm" = lgd14,
-        NULL
-      )
+      boundary_data <- switch(input$geo_type,
+                              "const24_nm" = const24,
+                              "DEA2014_nm" = dea14,
+                              "LGD2014_nm" = lgd14,
+                              NULL)
       
       if (!is.null(boundary_data)) {
-        if (input$area != "all" && input$geo_type %in% names(boundary_data)) {
-          boundary_data <- boundary_data |> filter(.data[[input$geo_type]] == input$area)
+        # Filter boundaries if specific area selected
+        if (input$area != "all") {
+          # Get the name column from boundary data (same as geo_type)
+          name_col <- input$geo_type
+          
+          if (name_col %in% names(boundary_data)) {
+            boundary_data <- boundary_data %>% 
+              filter(.data[[name_col]] == input$area)
+          }
         }
         
-        map <- map + tm_shape(boundary_data) + tm_borders(col = "black", lwd = 2)
+        map <- map +
+          tm_shape(boundary_data) +
+          tm_borders(col = "black", lwd = 2)
       }
     }
     
-    map + tm_title(ifelse(
-      input$map_type == "single",
-      paste0(input$year, ": ", var_label),
-      paste0("Change ", input$year_from, "–", input$year_to, ": ", var_label)
-    ))
+    map <- map +
+      tm_title(title_text)
     
     map
   })
-  
 }
 
 shinyApp(ui = ui, server = server)
