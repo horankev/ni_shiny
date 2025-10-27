@@ -248,13 +248,7 @@ server <- function(input, output, session) {
     }
     
     map <- map +
-      tm_layout(
-        title = title_text,
-        legend.position = c("left", "top"),
-        legend.bg.color = "white",
-        legend.bg.alpha = 0.6,
-        frame = FALSE
-      )
+      tm_title(title_text)
     
     map
   })
