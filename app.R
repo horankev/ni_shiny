@@ -14,10 +14,10 @@ dea14 <- readRDS("dea14_simplified.rds")
 lgd14 <- readRDS("lgd14_simplified.rds")
 
 print("==== Checking sf object in deployed app ====")
-print(paste("Rows:", nrow(sf_map)))         # Replace sf_map with your sf object name
-print(paste("Has geometry:", !is.null(sf::st_geometry(sf_map))))
-print(paste("CRS:", sf::st_crs(sf_map)$input))
-print(paste("Any empty geometries:", any(sf::st_is_empty(sf_map))))
+print(paste("Rows:", nrow(all_years_1km)))         # Replace sf_map with your sf object name
+print(paste("Has geometry:", !is.null(sf::st_geometry(all_years_1km))))
+print(paste("CRS:", sf::st_crs(all_years_1km)$input))
+print(paste("Any empty geometries:", any(sf::st_is_empty(all_years_1km))))
 
 # Variable choices
 var_choices <- c(
