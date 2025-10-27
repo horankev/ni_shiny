@@ -4,14 +4,50 @@ library(sf)
 library(dplyr)
 
 # Load data
-all_years_1km <- readRDS("all_years_1km.rds") |> sf::st_transform(4326)
-all_years_100m <- readRDS("all_years_100m.rds") |> sf::st_transform(4326)
-all_years_mixed <- readRDS("all_years_mixed.rds") |> sf::st_transform(4326)
+all_years_1km <- readRDS("all_years_1km.rds")
+all_years_100m <- readRDS("all_years_100m.rds")
+all_years_mixed <- readRDS("all_years_mixed.rds")
 
 # Load boundary files
-const24 <- readRDS("const24_simplified.rds") |> sf::st_transform(4326)
-dea14 <- readRDS("dea14_simplified.rds") |> sf::st_transform(4326)
-lgd14 <- readRDS("lgd14_simplified.rds") |> sf::st_transform(4326)
+const24 <- readRDS("const24_simplified.rds")
+dea14 <- readRDS("dea14_simplified.rds")
+lgd14 <- readRDS("lgd14_simplified.rds")
+
+observe({
+  cat("==== MAP DEBUG ====\n")
+  print(exists("all_years_1km"))
+  print(class(all_years_1km))
+  print(names(all_years_1km))
+  print(summary(all_years_100m$majority_community))
+  
+  
+  print(exists("all_years_100m"))
+  print(class(all_years_100m))
+  print(names(all_years_100m))
+  print(summary(all_years_100m$majority_community))
+  
+  
+  print(exists("all_years_mixed"))
+  print(class(all_years_mixed))
+  print(names(all_years_mixed))
+  print(summary(all_years_mixed$majority_community))
+  
+  
+  print(exists("const24"))
+  print(class(const24))
+  print(names(const24))
+  
+  
+  print(exists("dea14"))
+  print(class(dea14))
+  print(names(dea14))
+  
+  
+  print(exists("lgd14"))
+  print(class(lgd14))
+  print(names(lgd14))
+  cat("====================\n")
+})
 
 # Variable choices
 var_choices <- c(
