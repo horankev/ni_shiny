@@ -4,20 +4,14 @@ library(sf)
 library(dplyr)
 
 # Load data
-all_years_1km <- readRDS("all_years_1km.rds")
-all_years_100m <- readRDS("all_years_100m.rds")
-all_years_mixed <- readRDS("all_years_mixed.rds")
+all_years_1km <- readRDS("all_years_1km.rds") |> sf::st_transform(4326)
+all_years_100m <- readRDS("all_years_100m.rds") |> sf::st_transform(4326)
+all_years_mixed <- readRDS("all_years_mixed.rds") |> sf::st_transform(4326)
 
 # Load boundary files
-const24 <- readRDS("const24_simplified.rds")
-dea14 <- readRDS("dea14_simplified.rds")
-lgd14 <- readRDS("lgd14_simplified.rds")
-
-print("==== Checking sf object in deployed app ====")
-print(paste("Rows:", nrow(all_years_1km)))         # Replace sf_map with your sf object name
-print(paste("Has geometry:", !is.null(sf::st_geometry(all_years_1km))))
-print(paste("CRS:", sf::st_crs(all_years_1km)$input))
-print(paste("Any empty geometries:", any(sf::st_is_empty(all_years_1km))))
+const24 <- readRDS("const24_simplified.rds") |> sf::st_transform(4326)
+dea14 <- readRDS("dea14_simplified.rds") |> sf::st_transform(4326)
+lgd14 <- readRDS("lgd14_simplified.rds") |> sf::st_transform(4326)
 
 # Variable choices
 var_choices <- c(
