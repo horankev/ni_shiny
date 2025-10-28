@@ -5,7 +5,12 @@ library(dplyr)
 
 # Load data
 all_years_1km <- readRDS("all_years_1km.rds")
-all_years_100m <- readRDS("all_years_100m.rds")
+all_years_100m <- readRDS("all_years_100m.rds") |> 
+  mutate(
+    DEA2014_nm = as.character(DEA2014_nm),
+    LGD2014_nm = as.character(LGD2014_nm),
+    const24_nm = as.character(const24_nm)
+  )
 all_years_mixed <- readRDS("all_years_mixed.rds")
 
 # Load boundary files
