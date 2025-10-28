@@ -212,7 +212,9 @@ server <- function(input, output, session) {
         tm_fill(
           fill = input$variable,
           fill.scale = fill_scale,
-          fill.legend = tm_legend(title = var_label, position = tm_pos_in("left", "top")),
+          fill.legend = tm_legend(title = var_label, 
+                                  position = tm_pos_in("left", "top"),
+                                  legend.reverse = TRUE),
           fill_alpha = input$alpha,
           popup.vars = c("gridsquare", input$geo_type, input$variable)
         )
@@ -228,7 +230,9 @@ server <- function(input, output, session) {
             values = c("blue", "white", "red"),
             midpoint = 0
           ),
-          fill.legend = tm_legend(title = paste("Change in", var_label), position = tm_pos_in("left", "top")),
+          fill.legend = tm_legend(title = paste("Change in", var_label), 
+                                  position = tm_pos_in("left", "top"),
+                                  legend.reverse = TRUE),
           fill_alpha = input$alpha,
           popup.vars = c("gridsquare", input$geo_type, "change")
         )
