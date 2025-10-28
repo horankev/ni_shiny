@@ -185,7 +185,7 @@ server <- function(input, output, session) {
   output$map <- renderTmap({
     req(filtered_data())
     
-    tmap_mode("view")
+    tmap_mode("plot")
     
     # Get variable label
     var_label <- names(var_choices)[var_choices == input$variable]
