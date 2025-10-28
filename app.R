@@ -3,15 +3,15 @@ library(tmap)
 library(sf)
 library(dplyr)
 
-# Load data
-all_years_1km <- readRDS("all_years_1km.rds")
-all_years_100m <- readRDS("all_years_100m.rds")
-all_years_mixed <- readRDS("all_years_mixed.rds")
+library(here)
 
-# Load boundary files
-const24 <- readRDS("const24_simplified.rds")
-dea14 <- readRDS("dea14_simplified.rds")
-lgd14 <- readRDS("lgd14_simplified.rds")
+all_years_1km <- readRDS(here::here("all_years_1km.rds"))
+all_years_100m <- readRDS(here::here("all_years_100m.rds"))
+all_years_mixed <- readRDS(here::here("all_years_mixed.rds"))
+
+const24 <- readRDS(here::here("const24_simplified.rds"))
+dea14 <- readRDS(here::here("dea14_simplified.rds"))
+lgd14 <- readRDS(here::here("lgd14_simplified.rds"))
 
 # Variable choices
 var_choices <- c(
@@ -170,7 +170,7 @@ server <- function(input, output, session) {
         ) %>%
         st_as_sf() %>%
         mutate(change = !!sym(paste0(input$variable, "_to")) - 
-                 !!sym(paste0(input$variable, "_from")))
+                        !!sym(paste0(input$variable, "_from")))
       
       if (input$area != "all") {
         data_change <- data_change %>% 
@@ -196,7 +196,7 @@ server <- function(input, output, session) {
         tm_fill(
           fill = input$variable,
           fill.scale = tm_scale_continuous(values = "brewer.yl_or_rd"),
-          fill.legend = tm_legend(title = var_label, position = tm_pos_in("left", "top")),
+          fill.legend = tm_legend(title = var_label),
           fill_alpha = input$alpha,
           popup.vars = c("gridsquare", input$geo_type, input$variable)
         )
@@ -212,13 +212,13 @@ server <- function(input, output, session) {
             values = c("blue", "white", "red"),
             midpoint = 0
           ),
-          fill.legend = tm_legend(title = paste("Change in", var_label), position = tm_pos_in("left", "top")),
+          fill.legend = tm_legend(title = paste("Change in", var_label)),
           fill_alpha = input$alpha,
           popup.vars = c("gridsquare", input$geo_type, "change")
         )
       
       title_text <- paste0("Change ", input$year_from, " to ", input$year_to, 
-                           ": ", var_label)
+                          ": ", var_label)
     }
     
     # Add boundaries if requested
