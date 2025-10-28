@@ -2,6 +2,7 @@ library(shiny)
 library(tmap)
 library(sf)
 library(dplyr)
+library(leaflet)
 
 # Load data
 all_years_1km <- readRDS("all_years_1km.rds")
@@ -182,43 +183,36 @@ server <- function(input, output, session) {
   })
   
   # Create map
-  output$map <- renderTmap({
-    req(filtered_data())
+  output$map <- renderLeaflet({
     
-    tmap_mode("plot")
+    data <- filtered_data()
+    
+    # Ensure data exists
+    validate(
+      need(nrow(data) > 0, "No data available for this selection")
+    )
     
     # Get variable label
     var_label <- names(var_choices)[var_choices == input$variable]
     
-    if (input$map_type == "single") {
-      # Single year map
-      map <- tm_shape(filtered_data()) +
+    # Build tmap object
+    tm <- if (input$map_type == "single") {
+      tm_shape(data) +
         tm_fill(
           fill = input$variable,
-          fill.scale = tm_scale_continuous(values = "brewer.yl_or_rd"),
-          fill.legend = tm_legend(title = var_label),
-          fill_alpha = input$alpha,
+          palette = "YlOrRd",
+          alpha = input$alpha,
           popup.vars = c("gridsquare", input$geo_type, input$variable)
         )
-      
-      title_text <- paste0(input$year, ": ", var_label)
-      
     } else {
-      # Change map
-      map <- tm_shape(filtered_data()) +
+      tm_shape(data) +
         tm_fill(
           fill = "change",
-          fill.scale = tm_scale_continuous(
-            values = c("blue", "white", "red"),
-            midpoint = 0
-          ),
-          fill.legend = tm_legend(title = paste("Change in", var_label)),
-          fill_alpha = input$alpha,
+          palette = c("blue", "white", "red"),
+          midpoint = 0,
+          alpha = input$alpha,
           popup.vars = c("gridsquare", input$geo_type, "change")
         )
-      
-      title_text <- paste0("Change ", input$year_from, " to ", input$year_to, 
-                          ": ", var_label)
     }
     
     # Add boundaries if requested
@@ -230,27 +224,19 @@ server <- function(input, output, session) {
                               NULL)
       
       if (!is.null(boundary_data)) {
-        # Filter boundaries if specific area selected
         if (input$area != "all") {
-          # Get the name column from boundary data (same as geo_type)
           name_col <- input$geo_type
-          
           if (name_col %in% names(boundary_data)) {
-            boundary_data <- boundary_data %>% 
+            boundary_data <- boundary_data %>%
               filter(.data[[name_col]] == input$area)
           }
         }
-        
-        map <- map +
-          tm_shape(boundary_data) +
-          tm_borders(col = "black", lwd = 2)
+        tm <- tm + tm_shape(boundary_data) + tm_borders(col = "black", lwd = 2)
       }
     }
     
-    map <- map +
-      tm_title(title_text)
-    
-    map
+    # Convert to interactive Leaflet map
+    tmap_leaflet(tm)
   })
 }
 
