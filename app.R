@@ -3,15 +3,15 @@ library(tmap)
 library(sf)
 library(dplyr)
 
-library(here)
+# Load data
+all_years_1km <- readRDS("all_years_1km.rds")
+all_years_100m <- readRDS("all_years_100m.rds")
+all_years_mixed <- readRDS("all_years_mixed.rds")
 
-all_years_1km <- readRDS(here::here("all_years_1km.rds"))
-all_years_100m <- readRDS(here::here("all_years_100m.rds"))
-all_years_mixed <- readRDS(here::here("all_years_mixed.rds"))
-
-const24 <- readRDS(here::here("const24_simplified.rds"))
-dea14 <- readRDS(here::here("dea14_simplified.rds"))
-lgd14 <- readRDS(here::here("lgd14_simplified.rds"))
+# Load boundary files
+const24 <- readRDS("const24_simplified.rds")
+dea14 <- readRDS("dea14_simplified.rds")
+lgd14 <- readRDS("lgd14_simplified.rds")
 
 # Variable choices
 var_choices <- c(
