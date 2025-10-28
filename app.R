@@ -197,10 +197,21 @@ server <- function(input, output, session) {
     
     if (input$map_type == "single") {
       # Single year map
+      
+      # Use custom diverging scale for Catholic-Protestant Balance
+      if (input$variable == "cath_prot_balance_pct") {
+        fill_scale <- tm_scale_continuous(
+          values = c("lightsalmon1", "khaki", "turquoise3"),
+          midpoint = 50
+        )
+      } else {
+        fill_scale <- tm_scale_continuous(values = "brewer.yl_or_rd")
+      }
+      
       map <- tm_shape(filtered_data()) +
         tm_fill(
           fill = input$variable,
-          fill.scale = tm_scale_continuous(values = "brewer.yl_or_rd"),
+          fill.scale = fill_scale,
           fill.legend = tm_legend(title = var_label, position = tm_pos_in("left", "top")),
           fill_alpha = input$alpha,
           popup.vars = c("gridsquare", input$geo_type, input$variable)
@@ -225,6 +236,7 @@ server <- function(input, output, session) {
       title_text <- paste0("Change ", input$year_from, " to ", input$year_to, 
                            ": ", var_label)
     }
+    
     
     # Add boundaries if requested
     if (input$show_boundaries) {
