@@ -204,7 +204,18 @@ server <- function(input, output, session) {
           values = c("lightsalmon1", "khaki", "turquoise3"),
           midpoint = 50
         )
-      } else {
+        }
+      else if (input$variable == "catholic_pct") {
+        fill_scale <- tm_scale_continuous(
+          values = c("yellow", "darkgreen")
+        )
+      } 
+      else if (input$variable == "protestant_pct") {
+        fill_scale <- tm_scale_continuous(
+          values = c("lightblue", "darkblue")
+        )
+      } 
+      else {
         fill_scale <- tm_scale_continuous(values = "brewer.yl_or_rd")
       }
       
