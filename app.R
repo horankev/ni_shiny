@@ -212,7 +212,7 @@ server <- function(input, output, session) {
       } 
       else if (input$variable == "protestant_pct") {
         fill_scale <- tm_scale_continuous(
-          values = c("lightblue", "darkblue")
+          values = c("mintcream", "darkblue")
         )
       } 
       else {
